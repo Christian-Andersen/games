@@ -6,17 +6,19 @@ import { games } from '../games/config'
 <template>
   <div class="home-container">
     <header>
-      <h1>My Game Collection</h1>
+      <h1>Gaming Portal</h1>
     </header>
 
     <div class="game-grid">
-      <RouterLink 
-        v-for="game in games" 
-        :key="game.id" 
+      <RouterLink
+        v-for="game in games"
+        :key="game.id"
         :to="{ name: 'game', params: { slug: game.slug } }"
         class="game-card"
       >
-        <img :src="game.thumbnail" :alt="game.name" class="game-thumbnail" />
+        <div class="image-wrapper">
+          <img :src="game.thumbnail" :alt="game.name" class="game-thumbnail" />
+        </div>
         <div class="game-info">
           <h3>{{ game.name }}</h3>
           <p>{{ game.description }}</p>
@@ -30,58 +32,76 @@ import { games } from '../games/config'
 .home-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 60px 20px;
 }
 
 header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 60px;
 }
 
 h1 {
-  font-size: 2.5rem;
-  color: #2c3e50;
+  font-size: 3.5rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #42b883, #35495e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .game-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 30px;
 }
 
 .game-card {
-  border: 1px solid #ddd;
-  border-radius: 12px;
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 16px;
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  transition: transform 0.2s, box-shadow 0.2s;
-  background: white;
+  transition: all 0.3s ease;
 }
 
 .game-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  transform: translateY(-10px);
+  border-color: #42b883;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+.image-wrapper {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: #000;
 }
 
 .game-thumbnail {
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.game-card:hover .game-thumbnail {
+  transform: scale(1.1);
 }
 
 .game-info {
-  padding: 15px;
+  padding: 25px;
 }
 
 .game-info h3 {
-  margin: 0 0 10px 0;
-  color: #42b883;
+  margin: 0 0 12px 0;
+  font-size: 1.5rem;
+  color: #fff;
 }
 
 .game-info p {
   margin: 0;
-  font-size: 0.9rem;
-  color: #666;
+  font-size: 0.95rem;
+  color: #aaa;
+  line-height: 1.5;
 }
 </style>

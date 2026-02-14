@@ -7,8 +7,8 @@ const PLAYER_WIDTH = 40
 const INVADER_SIZE = 30
 
 const playerX = ref(GAME_WIDTH / 2 - PLAYER_WIDTH / 2)
-const bullets = ref<{ x: number, y: number }[]>([])
-const invaders = ref<{ x: number, y: number, id: number }[]>([])
+const bullets = ref<{ x: number; y: number }[]>([])
+const invaders = ref<{ x: number; y: number; id: number }[]>([])
 const score = ref(0)
 const gameOver = ref(false)
 
@@ -22,7 +22,7 @@ const initInvaders = () => {
       invaders.value.push({
         x: col * (INVADER_SIZE + 20) + 50,
         y: row * (INVADER_SIZE + 20) + 50,
-        id: row * 10 + col
+        id: row * 10 + col,
       })
     }
   }
@@ -42,15 +42,13 @@ const handleKeydown = (e: KeyboardEvent) => {
 const gameLoop = (time: number) => {
   if (gameOver.value) return
   const delta = time - lastTime
-  
+
   // Update bullets
-  bullets.value = bullets.value
-    .map(b => ({ ...b, y: b.y - 5 }))
-    .filter(b => b.y > 0)
+  bullets.value = bullets.value.map((b) => ({ ...b, y: b.y - 5 })).filter((b) => b.y > 0)
 
   // Update invaders
   let shouldShiftDown = false
-  invaders.value.forEach(inv => {
+  invaders.value.forEach((inv) => {
     inv.x += invaderDirection * (delta * 0.05)
     if (inv.x > GAME_WIDTH - INVADER_SIZE || inv.x < 0) {
       shouldShiftDown = true
@@ -59,25 +57,32 @@ const gameLoop = (time: number) => {
 
   if (shouldShiftDown) {
     invaderDirection *= -1
-    invaders.value.forEach(inv => {
+    invaders.value.forEach((inv) => {
       inv.y += 20
       if (inv.y > GAME_HEIGHT - 60) gameOver.value = true
     })
   }
 
   // Collisions
-  bullets.value.forEach((bullet, bIdx) => {
-    invaders.value.forEach((inv, iIdx) => {
+  for (let bIdx = bullets.value.length - 1; bIdx >= 0; bIdx--) {
+    const bullet = bullets.value[bIdx]
+    if (!bullet) continue
+    for (let iIdx = invaders.value.length - 1; iIdx >= 0; iIdx--) {
+      const inv = invaders.value[iIdx]
+      if (!inv) continue
       if (
-        bullet.x > inv.x && bullet.x < inv.x + INVADER_SIZE &&
-        bullet.y > inv.y && bullet.y < inv.y + INVADER_SIZE
+        bullet.x > inv.x &&
+        bullet.x < inv.x + INVADER_SIZE &&
+        bullet.y > inv.y &&
+        bullet.y < inv.y + INVADER_SIZE
       ) {
         invaders.value.splice(iIdx, 1)
         bullets.value.splice(bIdx, 1)
         score.value += 10
+        break // Bullet is gone, move to next bullet
       }
-    })
-  })
+    }
+  }
 
   if (invaders.value.length === 0) {
     initInvaders() // Next wave
@@ -110,16 +115,26 @@ const restart = () => {
 <template>
   <div class="space-invaders">
     <div class="hud">Score: {{ score }}</div>
-    
+
     <div class="game-board" :style="{ width: GAME_WIDTH + 'px', height: GAME_HEIGHT + 'px' }">
       <!-- Player -->
       <div class="player" :style="{ left: playerX + 'px' }"></div>
-      
+
       <!-- Bullets -->
-      <div v-for="(b, i) in bullets" :key="'b'+i" class="bullet" :style="{ left: b.x + 'px', top: b.y + 'px' }"></div>
-      
+      <div
+        v-for="(b, i) in bullets"
+        :key="'b' + i"
+        class="bullet"
+        :style="{ left: b.x + 'px', top: b.y + 'px' }"
+      ></div>
+
       <!-- Invaders -->
-      <div v-for="inv in invaders" :key="inv.id" class="invader" :style="{ left: inv.x + 'px', top: inv.y + 'px' }"></div>
+      <div
+        v-for="inv in invaders"
+        :key="inv.id"
+        class="invader"
+        :style="{ left: inv.x + 'px', top: inv.y + 'px' }"
+      ></div>
 
       <!-- Game Over Overlay -->
       <div v-if="gameOver" class="overlay">
@@ -175,14 +190,18 @@ const restart = () => {
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
 }
-.overlay h2 { color: #ff5f5f; font-size: 3rem; margin: 0; }
+.overlay h2 {
+  color: #ff5f5f;
+  font-size: 3rem;
+  margin: 0;
+}
 .overlay button {
   margin-top: 20px;
   padding: 10px 20px;

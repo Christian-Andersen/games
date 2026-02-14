@@ -25,10 +25,14 @@ const goHome = () => {
 
 <template>
   <div class="game-view" v-if="game">
-    <nav class="game-nav">
-      <button @click="goHome" class="home-button">← Back to Home</button>
-      <span class="game-title">{{ game.name }}</span>
-    </nav>
+    <!-- Optional: Shared Portal Header -->
+    <header class="portal-header">
+      <button @click="goHome" class="logo-btn">
+        <span class="portal-name">GAMES</span>
+      </button>
+      <div class="current-game">{{ game.name }}</div>
+    </header>
+
     <main class="game-content">
       <component :is="gameComponent" />
     </main>
@@ -45,36 +49,49 @@ const goHome = () => {
   flex-direction: column;
   height: 100vh;
   width: 100vw;
+  background: #121212;
+  overflow: hidden;
 }
 
-.game-nav {
+.portal-header {
+  height: 60px;
   display: flex;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #333;
-  color: white;
-  gap: 20px;
+  padding: 0 25px;
+  background: #000;
+  border-bottom: 1px solid #333;
+  z-index: 100;
 }
 
-.home-button {
-  background: #42b883;
+.logo-btn {
+  background: transparent;
   border: none;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 4px;
   cursor: pointer;
-  font-weight: bold;
+  padding: 0;
 }
 
-.game-title {
-  font-size: 1.2rem;
-  font-weight: bold;
+.portal-name {
+  color: #42b883;
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+}
+
+.current-game {
+  margin-left: 30px;
+  padding-left: 30px;
+  border-left: 1px solid #333;
+  color: #aaa;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
 }
 
 .game-content {
   flex: 1;
-  padding: 20px;
-  overflow: auto;
+  position: relative;
+  overflow: hidden;
 }
 
 .not-found {

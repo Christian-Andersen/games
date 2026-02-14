@@ -13,7 +13,7 @@ const handleClick = () => {
 const updateCPS = () => {
   const now = Date.now()
   // Only keep clicks from the last 5 seconds
-  clicks.value = clicks.value.filter(t => now - t < 5000)
+  clicks.value = clicks.value.filter((t) => now - t < 5000)
   cps.value = clicks.value.length / 5
 }
 
@@ -27,16 +27,14 @@ onUnmounted(() => clearInterval(interval))
   <div class="game-container">
     <h2>Clicks Per Second</h2>
     <p>Click as fast as you can! (5s average)</p>
-    
+
     <div class="stats">
       <div class="cps-display">{{ cps.toFixed(1) }}</div>
       <div class="label">CPS</div>
     </div>
 
-    <button @click="handleClick" class="click-area">
-      CLICK!
-    </button>
-    
+    <button @click="handleClick" class="click-area">CLICK!</button>
+
     <div class="total">Total clicks in last 5s: {{ clicks.length }}</div>
   </div>
 </template>
