@@ -369,13 +369,12 @@ const prevImage = () => {
   flex: 1;
 }
 
-.archive-card { 
+.archive-card {
+  background: #1e1e1e;
 
-  background: #1e1e1e; 
+  border-radius: 12px;
 
-  border-radius: 12px; 
-
-  overflow: hidden; 
+  overflow: hidden;
 
   border: 1px solid #333;
 
@@ -385,19 +384,46 @@ const prevImage = () => {
 
   flex-direction: column;
 
-  transition: transform 0.2s, border-color 0.2s;
-
+  transition:
+    transform 0.2s,
+    border-color 0.2s;
 }
 
-.archive-card:hover { transform: translateY(-4px); border-color: #42b883; }
+.archive-card:hover {
+  transform: translateY(-4px);
+  border-color: #42b883;
+}
 
-.archive-card img { width: 100%; height: 150px; object-fit: cover; flex-shrink: 0; }
+.archive-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
 
-.card-info { padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.card-info {
+  padding: 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
-.card-info h4 { margin: 0 0 4px 0; font-size: 1rem; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
-.card-info p { margin: 0; font-size: 0.8rem; color: #888; }
+.card-info p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #888;
+}
 
 /* Active Game */
 .game-container {
