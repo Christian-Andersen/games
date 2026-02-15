@@ -1,0 +1,23 @@
+repos:
+  - repo: local
+    hooks:
+      - id: frontend-format
+        name: frontend-format
+        entry: npm run format
+        language: system
+        files: \.(js|ts|vue|json|css|md)$
+        pass_filenames: false
+
+      - id: frontend-lint
+        name: frontend-lint
+        entry: npm run lint
+        language: system
+        files: \.(js|ts|vue)$
+        pass_filenames: false
+
+      - id: frontend-type-check
+        name: frontend-type-check
+        entry: npm run type-check
+        language: system
+        files: \.(ts|vue)$
+        pass_filenames: false
