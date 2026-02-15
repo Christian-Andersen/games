@@ -14,10 +14,19 @@ interface House {
   soldDate: string
   description: string
   price: number
+  imageFolder?: string
   images: string[]
 }
 
 const houses = housesData as House[]
+
+const getImageUrl = (house: House, imageName: string | undefined) => {
+  if (!imageName) return ''
+  if (imageName.startsWith('http')) return imageName
+  const folder = house.imageFolder || house.id
+  return `/games/house-price-guesser/images/${folder}/${imageName}`
+}
+
 const mode = ref<'select' | 'archive-list' | 'playing'>('select')
 const playingModeType = ref<'daily' | 'archive'>('daily')
 
@@ -127,7 +136,7 @@ const prevImage = () => {
           class="archive-card"
           @click="selectArchiveHouse(index)"
         >
-          <img :src="house.images[0]" :alt="house.address" loading="lazy" />
+          <img :src="getImageUrl(house, house.images[0])" :alt="house.address" loading="lazy" />
           <div class="card-info">
             <h4>{{ house.address }}</h4>
             <p>{{ house.type }} • {{ house.bedrooms }} Bed</p>
@@ -155,7 +164,7 @@ const prevImage = () => {
         <div class="visual-side">
           <div class="gallery">
             <img
-              :src="currentHouse.images[currentImageIndex]"
+              :src="getImageUrl(currentHouse, currentHouse.images[currentImageIndex])"
               alt="Property image"
               class="main-image"
             />
@@ -210,6 +219,11 @@ const prevImage = () => {
                   </div>
                 </div>
               </div>
+              <div class="secondary-stats">
+                <div class="stat-line"><span>Land Size:</span> {{ currentHouse.landSize }}m²</div>
+                <div class="stat-line"><span>Type:</span> {{ currentHouse.type }}</div>
+                <div class="stat-line"><span>Sold Date:</span> {{ currentHouse.soldDate }}</div>
+              </div>
             </div>
 
             <!-- Guess Input / Results -->
@@ -258,7 +272,7 @@ const prevImage = () => {
             <!-- Description -->
             <div class="details-section">
               <h3>Description</h3>
-              <p class="description">{{ currentHouse.description }}</p>
+              <p class="description" v-html="currentHouse.description"></p>
             </div>
           </div>
         </div>
@@ -274,6 +288,8 @@ const prevImage = () => {
   background: #121212;
   color: #fff;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .full-center {
@@ -281,7 +297,7 @@ const prevImage = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  flex: 1;
 }
 
 /* Mode Selection */
@@ -332,9 +348,10 @@ const prevImage = () => {
 /* Archive List */
 .archive-list-view {
   padding: 20px;
-  height: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .view-header {
@@ -342,34 +359,52 @@ const prevImage = () => {
   align-items: center;
   gap: 20px;
   margin-bottom: 20px;
+  flex-shrink: 0;
 }
 .archive-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 20px;
   overflow-y: auto;
+  flex: 1;
 }
 
-.archive-card {
-  background: #1e1e1e;
-  border-radius: 12px;
-  overflow: hidden;
+.archive-card { 
+
+  background: #1e1e1e; 
+
+  border-radius: 12px; 
+
+  overflow: hidden; 
+
   border: 1px solid #333;
+
+  height: 240px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  transition: transform 0.2s, border-color 0.2s;
+
 }
-.archive-card img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-}
-.card-info {
-  padding: 12px;
-}
+
+.archive-card:hover { transform: translateY(-4px); border-color: #42b883; }
+
+.archive-card img { width: 100%; height: 150px; object-fit: cover; flex-shrink: 0; }
+
+.card-info { padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+.card-info h4 { margin: 0 0 4px 0; font-size: 1rem; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.card-info p { margin: 0; font-size: 0.8rem; color: #888; }
 
 /* Active Game */
 .game-container {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1;
+  overflow: hidden;
 }
 
 .game-header {
@@ -379,6 +414,7 @@ const prevImage = () => {
   padding: 0 15px;
   background: #1a1a1a;
   border-bottom: 1px solid #333;
+  flex-shrink: 0;
 }
 
 .back-btn {
@@ -388,6 +424,7 @@ const prevImage = () => {
   padding: 5px 12px;
   border-radius: 6px;
   font-size: 0.9rem;
+  cursor: pointer;
 }
 .mode-indicator {
   flex: 1;
@@ -399,18 +436,16 @@ const prevImage = () => {
 }
 
 .main-layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   overflow: hidden;
 }
 
 /* Tablet/Desktop Side-by-Side */
 @media (min-width: 900px) {
   .main-layout {
-    grid-template-columns: 1fr 450px;
-    grid-template-rows: 1fr;
+    flex-direction: row;
   }
 }
 
@@ -419,26 +454,23 @@ const prevImage = () => {
   flex-direction: column;
   background: #000;
   border-bottom: 1px solid #333;
+  flex: 1;
+  min-height: 0;
 }
 
 @media (min-width: 900px) {
   .visual-side {
     border-bottom: none;
     border-right: 1px solid #333;
+    flex: 1.4;
   }
 }
 
 .gallery {
   position: relative;
-  aspect-ratio: 16/9;
   width: 100%;
-}
-
-@media (min-width: 900px) {
-  .gallery {
-    aspect-ratio: auto;
-    flex: 1;
-  }
+  flex: 1;
+  min-height: 0;
 }
 
 .main-image {
@@ -450,27 +482,40 @@ const prevImage = () => {
 .info-strip {
   padding: 15px 25px;
   background: #1a1a1a;
+  flex-shrink: 0;
 }
 .address {
-  font-size: 1.4rem;
+  font-size: clamp(1.1rem, 3vw, 1.8rem);
   margin: 0;
   font-weight: 700;
 }
 
 .interaction-side {
   background: #1e1e1e;
-  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (min-width: 900px) {
+  .interaction-side {
+    flex: 1;
+  }
 }
 
 .scroll-container {
-  padding: 20px;
+  padding: 25px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .stats-section {
   background: #252525;
   border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 20px;
+  padding: 20px;
+  margin-bottom: 25px;
   border: 1px solid #333;
 }
 
@@ -478,6 +523,7 @@ const prevImage = () => {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
+  margin-bottom: 15px;
 }
 .stat-item {
   display: flex;
@@ -491,29 +537,43 @@ const prevImage = () => {
 }
 .val-group .val {
   font-weight: 800;
-  font-size: 0.9rem;
+  font-size: 1rem;
   display: block;
 }
 .val-group .lab {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: #888;
   text-transform: uppercase;
 }
 
+.secondary-stats {
+  border-top: 1px solid #333;
+  padding-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+.stat-line span {
+  color: #888;
+  font-weight: 600;
+  margin-right: 5px;
+}
+
 .guess-input-box {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 .input-group {
   display: flex;
   background: #2a2a2a;
   border: 2px solid #444;
   border-radius: 12px;
-  padding: 4px;
+  padding: 6px;
 }
 
 .currency-symbol {
-  padding: 8px 12px;
-  font-size: 1.2rem;
+  padding: 8px 15px;
+  font-size: 1.5rem;
   color: #888;
   font-weight: 800;
 }
@@ -522,7 +582,7 @@ const prevImage = () => {
   background: transparent;
   border: none;
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 800;
   width: 10px;
   outline: none;
@@ -532,7 +592,7 @@ const prevImage = () => {
   background: #42b883;
   color: #fff;
   border: none;
-  padding: 8px 20px;
+  padding: 8px 25px;
   border-radius: 8px;
   font-weight: 900;
   cursor: pointer;
@@ -541,39 +601,45 @@ const prevImage = () => {
 .result-box {
   background: #1b2e25;
   border: 2px solid #42b883;
-  padding: 20px;
-  border-radius: 12px;
+  padding: 25px;
+  border-radius: 16px;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
+.history-section {
+  margin-bottom: 30px;
+}
 .history-section h4 {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: #666;
-  margin-bottom: 10px;
-  letter-spacing: 1.5px;
+  margin-bottom: 15px;
+  letter-spacing: 2px;
 }
 .guess-item {
   display: flex;
   justify-content: space-between;
-  padding: 10px 15px;
+  padding: 12px 20px;
   background: #252525;
-  border-radius: 8px;
-  margin-bottom: 6px;
+  border-radius: 10px;
+  margin-bottom: 8px;
   font-family: monospace;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  border: 1px solid #333;
 }
 
 .details-section h3 {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: #42b883;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  letter-spacing: 2px;
 }
 .description {
-  line-height: 1.5;
+  line-height: 1.7;
   color: #ccc;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  white-space: pre-line;
 }
 
 .hidden-mobile {
@@ -597,30 +663,37 @@ const prevImage = () => {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   border: none;
   color: #fff;
-  width: 40px;
-  height: 50px;
+  width: 50px;
+  height: 70px;
   cursor: pointer;
+  z-index: 10;
+  font-size: 1.5rem;
+  transition: background 0.2s;
+}
+.nav-btn:hover {
+  background: #42b883;
 }
 
 .nav-btn.prev {
   left: 0;
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 10px 10px 0;
 }
 .nav-btn.next {
   right: 0;
-  border-radius: 8px 0 0 8px;
+  border-radius: 10px 0 0 10px;
 }
 .image-counter {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 2px 10px;
-  border-radius: 12px;
-  font-size: 0.7rem;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  z-index: 10;
 }
 
 /* Phone Landscape Optimization */
@@ -629,12 +702,7 @@ const prevImage = () => {
     height: 40px;
   }
   .main-layout {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr;
-  }
-  .gallery {
-    aspect-ratio: auto;
-    height: 100%;
+    flex-direction: row;
   }
   .visual-side {
     border-bottom: none;
