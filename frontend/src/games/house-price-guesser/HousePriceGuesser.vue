@@ -24,7 +24,8 @@ const getImageUrl = (house: House, imageName: string | undefined) => {
   if (!imageName) return ''
   if (imageName.startsWith('http')) return imageName
   const folder = house.imageFolder || house.id
-  return `/games/house-price-guesser/images/${folder}/${imageName}`
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+  return `${base}/house-price-guesser/images/${folder}/${imageName}`
 }
 
 const mode = ref<'select' | 'archive-list' | 'playing'>('select')
