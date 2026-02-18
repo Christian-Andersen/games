@@ -65,4 +65,20 @@ export const games: Game[] = [
 
     component: () => import('./house-price-guesser/HousePriceGuesser.vue'),
   },
+
+  {
+    id: 'globe-hunter',
+
+    name: 'Globe Hunter',
+
+    slug: 'globe-hunter',
+
+    description: 'Hunt for gold pins on a rotating 3D globe. Test your reflexes!',
+
+    thumbnail: 'https://placehold.co/400x300?text=Globe+Hunter',
+
+    category: 'Skill',
+
+    component: () => import('./globe-game/GlobeGame.vue'),
+  },
 ]
