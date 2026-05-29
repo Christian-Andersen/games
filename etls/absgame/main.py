@@ -2,6 +2,9 @@ from pathlib import Path
 
 import polars as pl
 
+MIN_CODE = 10_000
+MAX_CODE = 99_999
+
 data_dir = Path("./data/")
 info = {
     "14100DO0001_2011-25.xlsx": ["Table 2"],
@@ -18,7 +21,7 @@ info = {
 
 all_dfs = []
 d: dict[str, dict[str, dict[str, float]]] = {}
-for book_name, sheet_names in info.items():
+for book_name in info:
     dfs: dict[str, pl.DataFrame] = pl.read_excel(
         data_dir / book_name,
         sheet_id=0,
@@ -28,16 +31,16 @@ for book_name, sheet_names in info.items():
     )
     dfs = {k: v for k, v in dfs.items() if k.startswith("Table ")}
     print(dfs.keys())
-    for df in dfs.values():
-        cols = df.columns
-        df = df.with_columns(
+    for frame in dfs.values():
+        cols = frame.columns
+        frame.with_columns(
             [
                 pl.col(cols[0]).cast(pl.Int64, strict=False),
                 pl.col(cols[1]).cast(pl.String),
                 pl.col(cols[2]).cast(pl.Int64, strict=False),
                 pl.col(cols[3:]).cast(pl.Float64, strict=False),
             ]
-        ).filter(pl.col("Code").is_not_null() & (pl.col("Code") >= 10_000) & (pl.col("Code") <= 99_999))
+        ).filter(pl.col("Code").is_not_null() & (pl.col("Code") >= MIN_CODE) & (pl.col("Code") <= MAX_CODE))
     dfs = {k: v for k, v in dfs.items() if not v.is_empty()}
     all_dfs.append(dfs)
     break

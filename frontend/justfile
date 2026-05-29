@@ -1,0 +1,11 @@
+dev:
+    pnpm exec vite
+
+check:
+    prek run --all-files
+
+build:
+    node build-pipeline.js
+
+preview:
+    pnpm exec vite preview

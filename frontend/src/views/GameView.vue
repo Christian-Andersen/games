@@ -1,104 +1,51 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, shallowRef, watchEffect } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { games } from '../games/config'
+import { computed, defineAsyncComponent, shallowRef, watchEffect } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { games } from "../games/config";
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 
 const game = computed(() => {
-  return games.find((g) => g.slug === route.params.slug)
-})
+	return games.find((g) => g.slug === route.params.slug);
+});
 
-const gameComponent = shallowRef()
+const gameComponent = shallowRef();
 
 watchEffect(() => {
-  if (game.value) {
-    gameComponent.value = defineAsyncComponent(game.value.component)
-  }
-})
+	if (game.value) {
+		gameComponent.value = defineAsyncComponent(game.value.component);
+	}
+});
 
 const goHome = () => {
-  router.push('/')
-}
+	router.push("/");
+};
 </script>
 
 <template>
-  <div class="game-view" v-if="game">
-    <!-- Optional: Shared Portal Header -->
-    <header class="portal-header">
-      <button @click="goHome" class="logo-btn">
-        <span class="portal-name">GAMES</span>
+  <div v-if="game" class="flex h-screen w-screen flex-col overflow-hidden bg-neutral-900">
+    <header class="flex h-15 items-center border-b border-neutral-700 bg-black px-6 z-50">
+      <button @click="goHome" class="cursor-pointer border-none bg-transparent p-0">
+        <span class="text-2xl font-black tracking-wider text-emerald-500">GAMES</span>
       </button>
-      <div class="current-game">{{ game.name }}</div>
+      <div class="ml-8 border-l border-neutral-700 pl-8 text-sm font-semibold uppercase tracking-wider text-neutral-400">
+        {{ game.name }}
+      </div>
     </header>
 
-    <main class="game-content">
+    <main class="relative flex-1 overflow-hidden">
       <component :is="gameComponent" />
     </main>
   </div>
-  <div v-else class="not-found">
-    <p>Game not found.</p>
-    <button @click="goHome">Go Home</button>
+
+  <div v-else class="flex h-screen flex-col items-center justify-center bg-neutral-900 text-white">
+    <p class="text-neutral-400">Game not found.</p>
+    <button
+      @click="goHome"
+      class="mt-5 cursor-pointer rounded-lg border border-emerald-500 bg-transparent px-6 py-2.5 font-bold text-emerald-500 transition-colors hover:bg-emerald-500/10"
+    >
+      Go Home
+    </button>
   </div>
 </template>
-
-<style scoped>
-.game-view {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;
-  background: #121212;
-  overflow: hidden;
-}
-
-.portal-header {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  padding: 0 25px;
-  background: #000;
-  border-bottom: 1px solid #333;
-  z-index: 100;
-}
-
-.logo-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-.portal-name {
-  color: #42b883;
-  font-weight: 900;
-  font-size: 1.5rem;
-  letter-spacing: 2px;
-}
-
-.current-game {
-  margin-left: 30px;
-  padding-left: 30px;
-  border-left: 1px solid #333;
-  color: #aaa;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.9rem;
-  letter-spacing: 1px;
-}
-
-.game-content {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-}
-
-.not-found {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-</style>

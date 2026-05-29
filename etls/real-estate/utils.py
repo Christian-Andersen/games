@@ -57,7 +57,7 @@ def value_to_dict(value: dict[str, Any]) -> dict[str, Any]:
         date_str = " ".join(tag_text.split()[-3:])
         date = datetime.strptime(date_str, "%d %b %Y").replace(tzinfo=UTC)
         data["date"] = date.strftime("%Y%m%d")
-    except (ValueError, IndexError):
+    except ValueError, IndexError:
         data["date"] = ""
 
     address = value["listingModel"]["address"]

@@ -1,0 +1,6 @@
+{
+  "name": "@arcade/shared",
+  "version": "1.0.0",
+  "main": "state.js",
+  "type": "module"
+}

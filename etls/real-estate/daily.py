@@ -18,8 +18,8 @@ data_dir.mkdir(exist_ok=True)
 ids_file = Path("ids.txt")
 
 ids = set()
-suburbs = {}
-look_up = {}
+suburbs: dict[str, float] = {}
+look_up: dict[str, str] = {}
 
 if ids_file.exists():
     with ids_file.open(encoding="utf-8") as f:
@@ -46,7 +46,7 @@ for prop_id in ids:
                     if suburb not in look_up:
                         series = f"{suburb}-{state}-{postcode}".replace(" ", "-").replace("'", "-").lower()
                         look_up[suburb] = series
-        except (json.JSONDecodeError, ValueError):
+        except json.JSONDecodeError, ValueError:
             continue
 
 # Load in done webpages
