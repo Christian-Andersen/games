@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node build-pipeline.js",
     "preview": "vite preview",
     "type-check": "vue-tsc --build",
     "check": "pnpm run type-check",

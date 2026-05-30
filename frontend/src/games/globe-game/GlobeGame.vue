@@ -15,6 +15,8 @@ let globe: THREE.Mesh;
 let targets: THREE.Group;
 let animationId: number;
 let controls: OrbitControls;
+const timerInterval = ref<ReturnType<typeof setInterval> | null>(null);
+let mouseDownPos = { x: 0, y: 0 };
 
 const initThree = () => {
 	if (!containerRef.value) return;
@@ -135,8 +137,18 @@ const spawnTarget = () => {
 	targets.add(target);
 };
 
+const handleMouseDown = (event: MouseEvent) => {
+	mouseDownPos = { x: event.clientX, y: event.clientY };
+};
+
 const handleCanvasClick = (event: MouseEvent) => {
 	if (gameOver.value) return;
+
+	const dist = Math.hypot(
+		event.clientX - mouseDownPos.x,
+		event.clientY - mouseDownPos.y,
+	);
+	if (dist > 5) return;
 
 	const rect = renderer.domElement.getBoundingClientRect();
 	const mouse = new THREE.Vector2(
@@ -157,12 +169,14 @@ const handleCanvasClick = (event: MouseEvent) => {
 
 const startTimer = () => {
 	timeLeft.value = 30;
-	const timer = setInterval(() => {
+	if (timerInterval.value) clearInterval(timerInterval.value);
+	timerInterval.value = setInterval(() => {
 		if (timeLeft.value > 0) {
 			timeLeft.value--;
 		} else {
 			gameOver.value = true;
-			clearInterval(timer);
+			if (timerInterval.value) clearInterval(timerInterval.value);
+			timerInterval.value = null;
 		}
 	}, 1000);
 };
@@ -175,6 +189,7 @@ onMounted(() => {
 onUnmounted(() => {
 	cancelAnimationFrame(animationId);
 	window.removeEventListener("resize", onWindowResize);
+	if (timerInterval.value) clearInterval(timerInterval.value);
 	if (renderer) {
 		renderer.dispose();
 	}
@@ -202,7 +217,7 @@ const restart = () => {
     <div
       ref="containerRef"
       class="relative h-[500px] w-full max-w-4xl cursor-crosshair overflow-hidden rounded-lg bg-[radial-gradient(circle_at_center,#1a1a3a_0%,#050510_100%)]"
-      @mousedown.prevent
+      @mousedown.prevent="handleMouseDown"
       @click="handleCanvasClick"
     >
       <div

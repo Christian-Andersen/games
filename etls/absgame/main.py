@@ -20,7 +20,6 @@ info = {
 }
 
 all_dfs = []
-d: dict[str, dict[str, dict[str, float]]] = {}
 for book_name in info:
     dfs: dict[str, pl.DataFrame] = pl.read_excel(
         data_dir / book_name,
@@ -30,18 +29,17 @@ for book_name in info:
         },
     )
     dfs = {k: v for k, v in dfs.items() if k.startswith("Table ")}
-    print(dfs.keys())
-    for frame in dfs.values():
+    print(f"{book_name}: {list(dfs.keys())}")
+    for name, frame in dfs.items():
         cols = frame.columns
-        frame.with_columns(
+        dfs[name] = frame.with_columns(
             [
                 pl.col(cols[0]).cast(pl.Int64, strict=False),
                 pl.col(cols[1]).cast(pl.String),
                 pl.col(cols[2]).cast(pl.Int64, strict=False),
                 pl.col(cols[3:]).cast(pl.Float64, strict=False),
             ]
-        ).filter(pl.col("Code").is_not_null() & (pl.col("Code") >= MIN_CODE) & (pl.col("Code") <= MAX_CODE))
+        ).filter(pl.col(cols[0]).is_not_null() & (pl.col(cols[0]) >= MIN_CODE) & (pl.col(cols[0]) <= MAX_CODE))
     dfs = {k: v for k, v in dfs.items() if not v.is_empty()}
     all_dfs.append(dfs)
-    break
 print(all_dfs)

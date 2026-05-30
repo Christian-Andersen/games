@@ -14,6 +14,8 @@ const gameOver = ref(false);
 
 let invaderDirection = 1;
 let lastTime = 0;
+let lastFireTime = 0;
+let animationFrameId = 0;
 
 const initInvaders = () => {
 	invaders.value = [];
@@ -35,6 +37,9 @@ const handleKeydown = (e: KeyboardEvent) => {
 	} else if (e.key === "ArrowRight" || e.key === "d") {
 		playerX.value = Math.min(GAME_WIDTH - PLAYER_WIDTH, playerX.value + 20);
 	} else if (e.key === " " || e.key === "ArrowUp") {
+		const now = Date.now();
+		if (now - lastFireTime < 200) return;
+		lastFireTime = now;
 		bullets.value.push({
 			x: playerX.value + PLAYER_WIDTH / 2 - 2,
 			y: GAME_HEIGHT - 40,
@@ -44,7 +49,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 
 const gameLoop = (time: number) => {
 	if (gameOver.value) return;
-	const delta = time - lastTime;
+	const delta = Math.min(time - lastTime, 50);
 
 	bullets.value = bullets.value
 		.map((b) => ({ ...b, y: b.y - 5 }))
@@ -91,17 +96,18 @@ const gameLoop = (time: number) => {
 	}
 
 	lastTime = time;
-	requestAnimationFrame(gameLoop);
+	animationFrameId = requestAnimationFrame(gameLoop);
 };
 
 onMounted(() => {
 	initInvaders();
 	window.addEventListener("keydown", handleKeydown);
-	requestAnimationFrame(gameLoop);
+	animationFrameId = requestAnimationFrame(gameLoop);
 });
 
 onUnmounted(() => {
 	window.removeEventListener("keydown", handleKeydown);
+	cancelAnimationFrame(animationFrameId);
 });
 
 const restart = () => {
@@ -109,8 +115,11 @@ const restart = () => {
 	gameOver.value = false;
 	playerX.value = GAME_WIDTH / 2 - PLAYER_WIDTH / 2;
 	bullets.value = [];
+	invaders.value = [];
+	lastTime = 0;
 	initInvaders();
-	requestAnimationFrame(gameLoop);
+	cancelAnimationFrame(animationFrameId);
+	animationFrameId = requestAnimationFrame(gameLoop);
 };
 </script>
 

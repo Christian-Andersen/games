@@ -1,8 +1,8 @@
 [project]
 name = "etl"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
+description = "ABS regional data ETL for game scoring"
+
 requires-python = ">=3.14"
 dependencies = [
     "httpx>=0.28.1",

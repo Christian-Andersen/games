@@ -6,6 +6,11 @@ import { games, standaloneGames } from "../games/config";
 const searchQuery = ref("");
 const selectedCategory = ref("All");
 
+const clearFilters = () => {
+	searchQuery.value = "";
+	selectedCategory.value = "All";
+};
+
 const allGames = computed(() => [
 	...games.map((g) => ({ ...g, isStandalone: false as const })),
 	...standaloneGames.map((g) => ({ ...g, isStandalone: true as const })),
@@ -82,6 +87,7 @@ const filteredGames = computed(() => {
             <img
               :src="game.thumbnail"
               :alt="game.name"
+              loading="lazy"
               class="h-full w-full object-cover transition-transform duration-500"
             />
             <div
@@ -105,6 +111,7 @@ const filteredGames = computed(() => {
             <img
               :src="game.thumbnail"
               :alt="game.name"
+              loading="lazy"
               class="h-full w-full object-cover transition-transform duration-500"
             />
             <div
@@ -124,7 +131,7 @@ const filteredGames = computed(() => {
     <div v-else class="px-5 py-24 text-center text-neutral-500">
       <p class="mb-5">No games found matching your criteria.</p>
       <button
-        @click=";((searchQuery = ''), (selectedCategory = 'All'))"
+        @click="clearFilters"
         class="cursor-pointer rounded-lg border border-emerald-500 bg-transparent px-6 py-2.5 font-bold text-emerald-500 transition-colors hover:bg-emerald-500/10"
       >
         Clear filters

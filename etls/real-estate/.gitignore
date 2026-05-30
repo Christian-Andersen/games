@@ -9,5 +9,9 @@ wheels/
 # Virtual environments
 .venv
 
+data/
 all.csv
+ids.txt
 loaded.txt
+finished_suburbs.txt
+toomany.txt
