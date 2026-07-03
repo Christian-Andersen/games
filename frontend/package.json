@@ -13,25 +13,25 @@
     "format": "biome format --write src/"
   },
   "dependencies": {
-    "@arcade/shared": "workspace:^1.0.0",
+    "@arcade/shared": "workspace:^",
     "@types/three": "^0.182.0",
     "three": "^0.182.0",
-    "vue": "^3.5.27",
-    "vue-router": "^5.0.1"
+    "vue": "^3.5.39",
+    "vue-router": "^5.1.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.16",
-    "@tailwindcss/vite": "^4.1.4",
+    "@biomejs/biome": "^2.5.2",
+    "@tailwindcss/vite": "^4.3.2",
     "@tsconfig/node24": "^24.0.4",
-    "@types/node": "^24.10.9",
-    "@vitejs/plugin-vue": "^6.0.3",
+    "@types/node": "^24.13.2",
+    "@vitejs/plugin-vue": "^6.0.7",
     "@vue/tsconfig": "^0.8.1",
-    "jiti": "^2.6.1",
-    "tailwindcss": "^4.1.4",
+    "jiti": "^2.7.0",
+    "tailwindcss": "^4.3.2",
     "typescript": "~5.9.3",
-    "vite": "^7.3.1",
-    "vite-plugin-vue-devtools": "^8.0.5",
-    "vue-tsc": "^3.2.4"
+    "vite": "^7.3.6",
+    "vite-plugin-vue-devtools": "^8.1.5",
+    "vue-tsc": "^3.3.6"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
