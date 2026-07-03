@@ -19,6 +19,7 @@
           biome
           git
           just
+          nodejs
           pnpm
           prek
           uv
